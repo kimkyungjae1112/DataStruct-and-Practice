@@ -57,48 +57,74 @@
 //}
 //
 
-//#include <iostream>
-//
-//class Queue
-//{
-//	struct Node
-//	{
-//		int data;
-//		Node* next;
-//		Node(int data) : data(data), next(nullptr) {}
-//	};
-//
-//	Node* head, *tail;
-//public:
-//	Queue() : head(nullptr), tail(nullptr){}
-//	void push(int data)
-//	{
-//		Node* new_node = new Node(data);
-//		if (head == nullptr && tail == nullptr)
-//		{
-//			head = tail = new_node;
-//			return;
-//		}
-//		tail->next = new_node;
-//		tail = new_node;
-//	}
-//
-//	int pop()
-//	{
-//		Node* temp = head;
-//		head = head->next;
-//		int data = temp->data;
-//		delete temp;
-//		return data;
-//	}
-//};
-//
-//int main()
-//{
-//	Queue Q;
-//	Q.push(10);
-//	Q.push(20);
-//	Q.push(30);
-//	std::cout << Q.pop() << std::endl;
-//	std::cout << Q.pop() << std::endl;
-//}
+#include <iostream>
+
+template <typename T>
+class Queue
+{
+	struct Node
+	{
+		T data;
+		Node* next;
+		Node(T data) : data(data), next(nullptr) {}
+	};
+
+	Node* head, * tail;
+
+public:
+	Queue() : head(nullptr), tail(nullptr) {}
+
+	bool is_empty()
+	{
+		if (tail == nullptr) return true;
+		return false;
+	}
+
+	void enqueue(T data)
+	{
+		Node* new_node = new Node(data);
+		if (is_empty())
+		{
+			head = tail = new_node;
+			return;
+		}
+		tail->next = new_node;
+		tail = new_node;
+	}
+
+	T dequeue()
+	{
+		if (!is_empty())
+		{
+			Node* temp = head;
+			head = head->next;
+			T data = temp->data;
+			delete temp;
+			return data;
+		}
+		else
+		{
+			std::cout << "Q가 비어있다." << std::endl;
+			return NULL;
+		}
+	}
+
+	T peek()
+	{
+		return head->data;
+	}
+};
+
+int main()
+{
+	Queue<int> Q;
+	Q.enqueue(10);
+	Q.enqueue(20);
+	Q.enqueue(30);
+
+	std::cout << Q.peek() << std::endl;
+	std::cout << Q.dequeue() << std::endl;
+	std::cout << Q.dequeue() << std::endl;
+	std::cout << Q.dequeue() << std::endl;
+	std::cout << Q.dequeue() << std::endl;
+}
