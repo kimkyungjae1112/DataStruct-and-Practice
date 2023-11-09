@@ -9,15 +9,14 @@ namespace stack_by_array
 		int stack_point;
 
 		int memory_allocation;
-
+		int length;
 	public:
-		Stack() : stack_point(-1), stack(new T[1]), memory_allocation(1) {}
-		Stack(int size) : stack_point(-1), stack(new T[size]), memory_allocation(size) {}
+		Stack() : stack_point(-1), stack(new T[1]), memory_allocation(1), length(0) {}
+		Stack(int size) : stack_point(-1), stack(new T[size]), memory_allocation(size), length(0) {}
 
 		bool is_full()
 		{
-			if (stack_point >= 1) return true;
-			return false;
+			return stack_point >= memory_allocation - 1; // 수정: 스택이 가득 찼는지 확인하는 조건 수정
 		}
 
 		bool is_empty()
@@ -25,26 +24,31 @@ namespace stack_by_array
 			if (stack_point == -1) return true;
 			return false;
 		}
+
 		void push(T data)
 		{
-			if (stack_point >= memory_allocation)
+			if (stack_point + 1 >= memory_allocation)
 			{
 				T* temp = new T[memory_allocation * 2];
-				for (int i = 0; i < stack_point; ++i)
+				for (int i = 0; i <= stack_point; ++i)
 				{
 					temp[i] = stack[i];
 				}
 				delete[] stack;
 				stack = temp;
 				memory_allocation *= 2;
-
 			}
 			stack[++stack_point] = data;
+			length++;
 		}
 
 		void pop()
 		{
-			if (!is_empty()) stack[stack_point--];
+			if (!is_empty())
+			{
+				stack_point--;
+				length--;
+			}
 			else return;
 		}
 
@@ -54,17 +58,28 @@ namespace stack_by_array
 			else return -1;
 		}
 
-		void print()
+		void print() const
 		{
-			int current_point = stack_point;
-			while (!is_empty())
+			for (int i = stack_point; i >= 0; --i)
 			{
-				std::cout << top() << std::endl;
-				pop();
+				std::cout << stack[i] << std::endl;
 			}
-			stack_point = current_point;
 		}
 
+		int get_length()
+		{
+			return length;
+		}
+		
+		int get_capacity()
+		{
+			return memory_allocation;
+		}
+
+		~Stack()
+		{
+			delete[] stack;
+		}
 	};
 }
 
@@ -80,10 +95,12 @@ namespace stack_by_sll
 			Node(T data) : data(data), next(nullptr) {}
 		};
 
+		int length;
+
 		Node* head;
 
 	public:
-		Stack() : head(nullptr) {}
+		Stack() : head(nullptr), length(0) {}
 		void push(T data)
 		{
 			Node* new_node = new Node(data);
@@ -118,6 +135,16 @@ namespace stack_by_sll
 			if (head == nullptr) return true;
 			else return false;
 		}
+
+		int get_length()
+		{
+			Node* current = head;
+			while (current)
+			{
+				length++;
+				current = current->next;
+			}
+			return length;
+		}
 	};
 }
-
