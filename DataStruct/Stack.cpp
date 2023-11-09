@@ -1,95 +1,123 @@
-//배열로 스택 구현
-//#include <iostream>
-//
-//class Stack
-//{
-//	int stack[16];
-//	int stack_point;
-//
-//public:
-//	Stack() : stack_point(0) {}
-//
-//	bool is_full()
-//	{
-//		if (stack_point >= 16) return true;
-//		return false;
-//	}
-//
-//	bool is_empty()
-//	{
-//		if (stack_point == 0) return true;
-//		return false;
-//	}
-//	void push(int data)
-//	{
-//		if (!is_full())
-//		{
-//			stack[stack_point++] = data;
-//		}
-//		else
-//		{
-//			return;
-//		}
-//	}
-//	
-//	int pop()
-//	{
-//		if (!is_empty()) return stack[stack_point--];
-//		else return -1;
-//	}
-//
-//};
+#include <iostream>
 
-//#include <iostream>
-//
-//class Stack
-//{
-//	struct Node
-//	{
-//		int data;
-//		Node* next;
-//		Node(int data) : data(data), next(nullptr) {}
-//	};
-//
-//	Node* top;
-//
-//public:
-//	Stack() : top(nullptr) {}
-//	void push(int data)
-//	{
-//		Node* new_node = new Node(data);
-//		new_node->next = top;
-//		top = new_node;
-//	}
-//
-//	int pop()
-//	{
-//		Node* temp = top;
-//		top = top->next;
-//		int value = temp->data;
-//		delete temp;
-//		return value;
-//	}
-//	void print()
-//	{
-//		Node* current = top;
-//		while (top != nullptr)
-//		{
-//			std::cout << top->data << std::endl;
-//			top = top->next;
-//		}
-//	}
-//};
-//
-//int main()
-//{
-//	Stack st;
-//	st.push(10);
-//	st.push(20);
-//	st.push(30);
-//	std::cout << st.pop() << std::endl;
-//	std::cout << st.pop() << std::endl;
-//	st.push(50);
-//	st.push(40);
-//	st.print();
-//}
+namespace stack_by_array
+{
+	template<typename T>
+	class Stack
+	{
+		T* stack;
+		int stack_point;
+
+		int memory_allocation;
+
+	public:
+		Stack() : stack_point(-1), stack(new T[1]), memory_allocation(1) {}
+		Stack(int size) : stack_point(-1), stack(new T[size]), memory_allocation(size) {}
+
+		bool is_full()
+		{
+			if (stack_point >= 1) return true;
+			return false;
+		}
+
+		bool is_empty()
+		{
+			if (stack_point == -1) return true;
+			return false;
+		}
+		void push(T data)
+		{
+			if (stack_point >= memory_allocation)
+			{
+				T* temp = new T[memory_allocation * 2];
+				for (int i = 0; i < stack_point; ++i)
+				{
+					temp[i] = stack[i];
+				}
+				delete[] stack;
+				stack = temp;
+				memory_allocation *= 2;
+
+			}
+			stack[++stack_point] = data;
+		}
+
+		void pop()
+		{
+			if (!is_empty()) stack[stack_point--];
+			else return;
+		}
+
+		T top()
+		{
+			if (!is_empty()) return stack[stack_point];
+			else return -1;
+		}
+
+		void print()
+		{
+			int current_point = stack_point;
+			while (!is_empty())
+			{
+				std::cout << top() << std::endl;
+				pop();
+			}
+			stack_point = current_point;
+		}
+
+	};
+}
+
+namespace stack_by_sll
+{
+	template<typename T>
+	class Stack
+	{
+		struct Node
+		{
+			T data;
+			Node* next;
+			Node(T data) : data(data), next(nullptr) {}
+		};
+
+		Node* head;
+
+	public:
+		Stack() : head(nullptr) {}
+		void push(T data)
+		{
+			Node* new_node = new Node(data);
+			new_node->next = head;
+			head = new_node;
+		}
+
+		void pop()
+		{
+			Node* temp = head;
+			head = head->next;
+			delete temp;
+		}
+
+		T top()
+		{
+			return head->data;
+		}
+
+		void print()
+		{
+			Node* current = head;
+			while (current != nullptr)
+			{
+				std::cout << current->data << std::endl;
+				current = current->next;
+			}
+		}
+
+		bool empty()
+		{
+			if (head == nullptr) return true;
+			else return false;
+		}
+	};
+}
+
