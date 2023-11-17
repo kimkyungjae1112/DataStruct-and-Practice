@@ -56,166 +56,89 @@ using namespace std;
 
 namespace BT_by_List
 {
-    struct TreeNode
-    {
-        int data;
-        TreeNode* left;
-        TreeNode* right;
+	class Binary_Search_Tree
+	{
+	private:
+		struct Node
+		{
+			int data;
+			Node* left;
+			Node* right;
+			Node(int data) : data(data), left(nullptr), right(nullptr) {}
+		};
 
-        TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
-    };
+		void _insert(Node* cusor, int data)
+		{
+			Node* parent(0);
+			while (cusor)
+			{
+				parent = cusor; //값이 들어있는 단말 노드의 마지막으로 가기 위함
+				if (parent->data < data)
+				{
+					cusor = cusor->right;
+				}
+				else if (parent->data > data)
+				{
+					cusor = cusor->left;
+				}
 
-    // 이진 트리 클래스
-    class BinaryTree
-    {
-    private:
-        TreeNode* root;
+				else
+				{
+					cout << "이미 있는 값입니다. " << endl;
+					return;
+				}
+			}
 
-        // 재귀적으로 inorder 순회를 수행하는 helper 함수
-        void inorderHelper(TreeNode* node)
-        {
-            if (node)
-            {
-                inorderHelper(node->left);
-                cout << node->data << " ";
-                inorderHelper(node->right);
-            }
-        }
+			if (parent->data < data)
+			{
+				parent->right = new Node(data);
+			}
+			else
+			{
+				parent->left = new Node(data);
+			}
+		}
 
-        void preorderHelper(TreeNode* node)
-        {
-            if (node)
-            {
-                cout << node->data << " ";
-                preorderHelper(node->left);
-                preorderHelper(node->right);
-            }
-        }
+		void _inorder(Node* cusor)
+		{
+			if (!cusor) return;
 
-    public:
-        BinaryTree() : root(nullptr) {}
+			_inorder(cusor->left);
+			cout << cusor->data << " ";
+			_inorder(cusor->right);
+		}
 
-        // 새 노드를 추가하는 함수
-        TreeNode* insert(TreeNode* node, int data)
-        {
-            if (node == nullptr)
-            {
-                return new TreeNode(data);
-            }
 
-            if (data < node->data)
-            {
-                node->left = insert(node->left, data);
-            }
-            else if (data > node->data)
-            {
-                node->right = insert(node->right, data);
-            }
+		Node* root;
+	public:
+		Binary_Search_Tree() : root(nullptr) {}
 
-            return node;
-        }
+		void insert(int data)
+		{
+			if (!root)
+			{
+				root = new Node(data);
+				return;
+			}
 
-        // 이진 트리에 새 데이터를 추가하는 함수
-        void addNode(int data)
-        {
-            root = insert(root, data);
-        }
+			_insert(root, data);
+		}
 
-        // inorder 순회를 호출하는 함수
-        void inorderTraversal()
-        {
-            inorderHelper(root);
-        }
+		void _inorder()
+		{
+			_inorder(root);
+		}
 
-        void preorder()
-        {
-            preorderHelper(root);
-        }
-    };
+	};
 
-    int main()
-    {
-        BinaryTree tree;
-
-        // 이진 트리에 노드 추가
-        tree.addNode(5);
-        tree.addNode(3);
-        tree.addNode(7);
-        tree.addNode(2);
-        tree.addNode(4);
-
-        // inorder 순회 출력
-        cout << "Inorder Traversal: ";
-        tree.inorderTraversal();
-        cout << endl;
-        cout << "preorder Traversal: ";
-        tree.preorder();
-
-        return 0;
-    }
+	int main()
+	{
+		Binary_Search_Tree bst;
+		bst.insert(30);
+		bst.insert(40);
+		bst.insert(10);
+		bst.insert(20);
+		bst._inorder();
+	}
 }
 
-class Binary_Tree
-{
-    struct Node
-    {
-        int data;
-        Node* left;
-        Node* right;
-        Node(int data) : data(data), left(nullptr), right(nullptr) {}
-    };
-
-    Node* root;
-
-    void inorder_help(Node* start)
-    {
-        if (start)
-        {
-            inorder_help(start->left);
-            cout << start->data << " ";
-            inorder_help(start->right);
-        }
-    }
-public:
-    Binary_Tree() : root(nullptr) {}
-
-    Node* insert(Node* start, int data)
-    {
-        if (start == nullptr)
-        {
-            return new Node(data);
-        }
-        else if (data < start->data)
-        {
-            return insert(start->left, data);
-        }
-        else if (data > start->data)
-        {
-            return insert(start->right, data);
-        }
-        return start;
-    }
-
-    void add_node(int data)
-    {
-        Node* current = root;
-        current = insert(current, data);
-    }
-
-    void inorder()
-    {
-        inorder_help(root);
-    }
-};
-
-int main()
-{
-    Binary_Tree bt;
-    bt.add_node(1);
-    bt.add_node(6);
-    bt.add_node(3);
-    bt.add_node(2);
-    bt.add_node(4);
-    bt.add_node(5);
-    bt.inorder();
-}
